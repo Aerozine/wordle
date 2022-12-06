@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "solver.h"
 #include "wordle.h"
 #include "dict.h"
 #include "LinkedList.h"

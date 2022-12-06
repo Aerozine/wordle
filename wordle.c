@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "dict.h"
 #include "wordle.h"
@@ -63,8 +64,14 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 	choose answer
 	---------------------------------------------------------------------------
 	*/
+	wordle->answer = malloc((SIZEWORD+1)*sizeof(char));
+	if(!wordle->answer)
+		terminate("wordleStart: malloc answer failed");
+
 	if(answer)
-		wordle->answer = answer;
+	{
+		strcpy(wordle->answer,answer);
+	}
 	else
 	{
 		FILE *answerFile = fopen(answers_file,"r");
@@ -84,7 +91,7 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 			// TO LOIC : faute de mieux je parcours tout le fichier jusqu'au bon mot
 
 		randomAnswer[SIZEWORD] = 0;
-		wordle->answer = randomAnswer;
+		strcpy(wordle->answer,randomAnswer);
 		fclose(answerFile);
 	}
 	return wordle;
@@ -114,7 +121,9 @@ char *wordleComputePattern(char *guess, char *answer)
 
 	/* count each letter */
 	for(int i=0; i < SIZEWORD; i++)
+	{
 		answerLetters[answer[i] - 'a']++;
+	}
 
 	/* Pattern Computation
 	---------------------------------------------------------------------------
@@ -124,23 +133,29 @@ char *wordleComputePattern(char *guess, char *answer)
 	for(int i=0; i < SIZEWORD; i++)
 		pattern[i] = '_';
 	pattern[SIZEWORD] = 0;
-	
+
 	/* correct letters */
 	for(int i=0; i < SIZEWORD; i++)
+	{
 		if(guess[i] == answer[i])
 			{
 				pattern[i] = 'o';
 				answerLetters[answer[i] - 'a']--;
 			}
+	}
 
 	/* remaining incorrect or misplaced letters */
 	for(int i=0; i < SIZEWORD; i++)
-		if((pattern[i] =! 'o'))
+	{
+		if(pattern[i] != 'o')
+		{
 			if(answerLetters[guess[i] - 'a'] > 0)
 				{
 					pattern[i] = '*';
 					answerLetters[guess[i] - 'a']--;
 				}
+		}
+	}
 
 	return pattern;
 }
