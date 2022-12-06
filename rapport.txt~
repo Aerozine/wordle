@@ -1,0 +1,59 @@
+Ne modifiez pas ce fichier (même cette ligne) sauf pour y ajouter vos réponses
+aux endroits marqués de "..."
+
+Etudiant 1:
+Matricule: ...
+Nom: ...
+Prénom: ...
+Contribution au projet: ... %
+
+Etudiant 2: (laissez vide si vous avez fait le projet seul)
+Matricule: ...
+Nom: ...
+Prénom: ...
+Contribution au projet: ... %
+
+Analyse de complexité
+=====================
+
+Reportez ci-dessous les complexités dans le pire cas des fonctions suivantes en
+fonction des paramètres mentionnés.
+
+plCompressPolyline: O(...)
+(en fonction du nombre de points n de la polyligne)
+
+sketchDistanceHausdorff: O(...)
+(en supposant que les deux sketches contiennent le même nombre de points n)
+
+recNearestNeighbors: O(...)
+(en fonction du nombre de sketches n et du nombre de voisins k)
+
+Expériences
+===========
+
+Réalisez les trois expériences ci-dessous et rapportez la précision
+et les temps de calcul dans chaque cas.
+
+./NNSketch -k 5 -d hausdorff trainingset.txt testset.txt
+
+Précision: ...%
+Temps de calcul: ...s
+
+./NNSketch -k 5 -c 5.0 -d hausdorff trainingsetverylarge.txt testset.txt
+
+Précision: ...%
+Temps de calcul: ...s
+
+./NNSketch -k 5 -d hausdorff trainingsetverylarge.txt testset.txt
+
+Précision: ...%
+Temps de calcul: ...s
+
+Paramètres optimaux pour votre distance
+=======================================
+
+Reportez ci-dessous la valeur de k et le seuil de compression
+que vous souhaitez qu'on utilise pour tester votre distance
+
+- k: ...
+- Compression: ...
