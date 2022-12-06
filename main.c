@@ -253,7 +253,7 @@ int main(int argc, char **argv)
         usage();
         exit(EXIT_FAILURE);
     }
-
+    
     srand(time(NULL));
 
     play(args.use_solver, args.answers_file, args.guesses_file,

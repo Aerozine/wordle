@@ -85,9 +85,12 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 			kitsune++;
 
 		/* choose random word */
+		rewind(answerFile);
 		int random = rand() % kitsune;
 		for(kitsune = 0; kitsune < random; kitsune++)
-			fgets(randomAnswer,SIZEGET,answerFile);
+			{
+				fgets(randomAnswer,SIZEGET,answerFile);
+			}
 			// TO LOIC : faute de mieux je parcours tout le fichier jusqu'au bon mot
 
 		randomAnswer[SIZEWORD] = 0;
