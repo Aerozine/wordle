@@ -4,7 +4,8 @@
 #include "dict.h"
 #include "wordle.h"
 
-#define SIZE 7 // words of 5 characters + \n + terminator
+#define SIZEGET 7 // words of 5 characters + \n + terminator
+#define SIZEWORD 5 // words of 5 characters
 #define LETTERS 26 // nb of letters in the alphabet
 
 struct Wordle_t
@@ -41,17 +42,17 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 	/* count Sg */
 	int kitsune = 0;
 	  // seems like a cute kitsune wants to help
-	char guess[SIZE];
-	while(fgets(guess,SIZE,guessesFile))
+	char guess[SIZEGET];
+	while(fgets(guess,SIZEGET,guessesFile))
 		kitsune++;
 
 	/* initialize dictionary */
 	Dict *guesses = dictCreate(kitsune);
 
 	rewind(guessesFile);
-	for(kitsune = 0; fgets(guess,SIZE,guessesFile); kitsune++)
+	for(kitsune = 0; fgets(guess,SIZEGET,guessesFile); kitsune++)
 		{
-			guess[SIZE-2] = 0;
+			guess[SIZEWORD] = 0;
 			dictInsert(guesses,guess,(double) kitsune);
 		}
 
@@ -72,17 +73,17 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 
 		/* count Sa */
 		kitsune = 0;
-		char randomAnswer[SIZE];
-		while(fgets(randomAnswer,SIZE,answerFile))
+		char randomAnswer[SIZEGET];
+		while(fgets(randomAnswer,SIZEGET,answerFile))
 			kitsune++;
 
 		/* choose random word */
 		int random = rand() % kitsune;
 		for(kitsune = 0; kitsune < random; kitsune++)
-			fgets(randomAnswer,SIZE,answerFile);
+			fgets(randomAnswer,SIZEGET,answerFile);
 			// TO LOIC : faute de mieux je parcours tout le fichier jusqu'au bon mot
 
-		randomAnswer[SIZE-2] = 0;
+		randomAnswer[SIZEWORD] = 0;
 		wordle->answer = randomAnswer;
 		fclose(answerFile);
 	}
@@ -108,24 +109,24 @@ char *wordleComputePattern(char *guess, char *answer)
 	*/
 	/* initialize array for 26 letters */
 	int answerLetters[LETTERS];
-	for(int i=0; i<LETTERS;i++)
+	for(int i=0; i < LETTERS ;i++)
 		answerLetters[i] = 0;
 
 	/* count each letter */
-	for(int i=0; i < SIZE-2; i++)
+	for(int i=0; i < SIZEWORD; i++)
 		answerLetters[answer[i] - 'a']++;
 
 	/* Pattern Computation
 	---------------------------------------------------------------------------
 	*/
 	/* initialize pattern */
-	char *pattern = malloc((SIZE-1)*sizeof(char));
-	for(int i=0; i < SIZE-2; i++)
+	char *pattern = malloc( (SIZEWORD+1) * sizeof(char) );
+	for(int i=0; i < SIZEWORD; i++)
 		pattern[i] = '_';
-	pattern[SIZE-2] = 0;
+	pattern[SIZEWORD] = 0;
 	
 	/* correct letters */
-	for(int i=0; i < SIZE-2; i++)
+	for(int i=0; i < SIZEWORD; i++)
 		if(guess[i] == answer[i])
 			{
 				pattern[i] = 'o';
@@ -133,7 +134,7 @@ char *wordleComputePattern(char *guess, char *answer)
 			}
 
 	/* remaining incorrect or misplaced letters */
-	for(int i=0; i < SIZE-2; i++)
+	for(int i=0; i < SIZEWORD; i++)
 		if((pattern[i] =! 'o'))
 			if(answerLetters[guess[i] - 'a'] > 0)
 				{
