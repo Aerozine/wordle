@@ -50,6 +50,20 @@ static struct _args parse_args(int argc, char **argv);
  */
 static void usage();
 
+static void usage()
+{
+    fprintf(stderr, "Usage: ./wordle [--mode solver|human]"
+                    "[--answers-file answers_file]"
+                    "[--guesses-file guesses_file]"
+                    "[--answer answer]"
+                    "[--first-guess first_guess]\n"
+                    "--mode: solver or human\n"
+                    "--answers-file: file containing the list of possible answers.\n"
+                    "--guesses-file: file containing the list of accepted words.\n"
+                    "--answer: set the hidden word.\n"
+                    "--first-guess: set the first guess (only for the solver mode).\n");
+}
+
 static void play(bool solverp, char *answers_file, char *guesses_file,
                  char *answer, char *first_guess)
 {
@@ -220,20 +234,6 @@ static struct _args parse_args(int argc, char **argv)
     }
 
     return args;
-}
-
-static void usage()
-{
-    fprintf(stderr, "Usage: ./wordle [--mode solver|human]"
-                    "[--answers-file answers_file]"
-                    "[--guesses-file guesses_file]"
-                    "[--answer answer]"
-                    "[--first-guess first_guess]\n"
-                    "--mode: solver or human\n"
-                    "--answers-file: file containing the list of possible answers.\n"
-                    "--guesses-file: file containing the list of accepted words.\n"
-                    "--answer: set the hidden word.\n"
-                    "--first-guess: set the first guess (only for the solver mode).\n");
 }
 
 int main(int argc, char **argv)
