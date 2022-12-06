@@ -1,11 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "dict.h"
 #include "wordle.h"
 
-#define SIZE 6 // words of 5 characters + terminator
+#define SIZE 7 // words of 5 characters + \n + terminator
 #define LETTERS 26 // nb of letters in the alphabet
 
 struct Wordle_t
@@ -13,8 +12,6 @@ struct Wordle_t
 	Dict *guesses;
 	char *answer;
 };
-
-static void terminate(char *m);
 
 static void terminate(char *m)
 {
@@ -53,7 +50,10 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 
 	rewind(guessesFile);
 	for(kitsune = 0; fgets(guess,SIZE,guessesFile); kitsune++)
-		dictInsert(guesses,guess,(double) kitsune);
+		{
+			guess[SIZE-2] = 0;
+			dictInsert(guesses,guess,(double) kitsune);
+		}
 
 	wordle->guesses = guesses;
 	fclose(guessesFile);
@@ -82,6 +82,7 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 			fgets(randomAnswer,SIZE,answerFile);
 			// TO LOIC : faute de mieux je parcours tout le fichier jusqu'au bon mot
 
+		randomAnswer[SIZE-2] = 0;
 		wordle->answer = randomAnswer;
 		fclose(answerFile);
 	}
@@ -111,20 +112,20 @@ char *wordleComputePattern(char *guess, char *answer)
 		answerLetters[i] = 0;
 
 	/* count each letter */
-	for(int i=0; i < SIZE-1; i++)
+	for(int i=0; i < SIZE-2; i++)
 		answerLetters[answer[i] - 'a']++;
 
 	/* Pattern Computation
 	---------------------------------------------------------------------------
 	*/
 	/* initialize pattern */
-	char *pattern = malloc(SIZE*sizeof(char));
-	for(int i=0; i < SIZE-1; i++)
+	char *pattern = malloc((SIZE-1)*sizeof(char));
+	for(int i=0; i < SIZE-2; i++)
 		pattern[i] = '_';
-	pattern[SIZE-1] = 0;
+	pattern[SIZE-2] = 0;
 	
 	/* correct letters */
-	for(int i=0; i < SIZE-1; i++)
+	for(int i=0; i < SIZE-2; i++)
 		if(guess[i] == answer[i])
 			{
 				pattern[i] = 'o';
@@ -132,7 +133,7 @@ char *wordleComputePattern(char *guess, char *answer)
 			}
 
 	/* remaining incorrect or misplaced letters */
-	for(int i=0; i < SIZE-1; i++)
+	for(int i=0; i < SIZE-2; i++)
 		if((pattern[i] =! 'o'))
 			if(answerLetters[guess[i] - 'a'] > 0)
 				{
