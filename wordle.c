@@ -133,8 +133,6 @@ char *wordleComputePattern(char *guess, char *answer)
 	*/
 	/* initialize pattern */
 	char *pattern = malloc( (SIZEWORD+1) * sizeof(char) );
-	for(int i=0; i < SIZEWORD; i++)
-		pattern[i] = '_';
 	pattern[SIZEWORD] = 0;
 
 	/* correct letters */
@@ -145,6 +143,8 @@ char *wordleComputePattern(char *guess, char *answer)
 				pattern[i] = 'o';
 				answerLetters[answer[i] - 'a']--;
 			}
+		else
+			pattern[i] = '_';
 	}
 
 	/* remaining incorrect or misplaced letters */
