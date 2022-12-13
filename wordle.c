@@ -39,18 +39,29 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 	FILE *guessesFile = fopen(guesses_file,"r");
 	if(!guessesFile)
 		terminate("wordleStart: guesses_file cannot be opened");
-
-	/* count Sg */
 	int kitsune = 0;
-	  // seems like a cute kitsune wants to help
-	char guess[SIZEGET];
+
+// /* --meta comment-- // put a "//"in the begin to enable/disable the fragment
+fseek(guessesFile, 0, SEEK_END);//go to the end
+int  size = ftell(guessesFile)+1;  // get the number of bytes
+fseek(guessesFile, 0, SEEK_SET); // return at the start
+kitsune=size/(SIZEWORD+1);
+//*/
+/* little hack
+give the number of bytes in the file , dividing that with SIZEWORD+1 gives the number of word
+idk what you want to chose
+it depends on how you encode the characters
+but since we only use characters from the Roman alphabet,
+a character is represented by a byte in UTF-8, its like ascii
+*/
+/*	  // seems like a cute kitsune wants to help
+
 	while(fgets(guess,SIZEGET,guessesFile))
 		kitsune++;
-
-	/* initialize dictionary */
+*/	/* initialize dictionary */
 	Dict *guesses = dictCreate(kitsune);
-
-	rewind(guessesFile);
+	char guess[SIZEGET];
+//	rewind(guessesFile);
 	for(kitsune = 0; fgets(guess,SIZEGET,guessesFile); kitsune++)
 		{
 			guess[SIZEWORD] = 0;
@@ -91,8 +102,8 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 			{
 				fgets(randomAnswer,SIZEGET,answerFile);
 			}
-			// TO LOIC : faute de mieux je parcours tout le fichier jusqu'au bon mot
-
+			// faute de mieux je parcours tout le fichier jusqu'au bon mot
+			//->fseek
 		randomAnswer[SIZEWORD] = 0;
 		strcpy(wordle->answer,randomAnswer);
 		fclose(answerFile);
@@ -110,7 +121,6 @@ char *wordleGetTrueWord(Wordle *game)
 {
 	return game->answer;
 }
-
 char *wordleComputePattern(char *guess, char *answer)
 {
 	/*
@@ -133,6 +143,8 @@ char *wordleComputePattern(char *guess, char *answer)
 	*/
 	/* initialize pattern */
 	char *pattern = malloc( (SIZEWORD+1) * sizeof(char) );
+	for(int i=0; i < SIZEWORD; i++)
+		pattern[i] = '_';
 	pattern[SIZEWORD] = 0;
 
 	/* correct letters */
@@ -143,8 +155,6 @@ char *wordleComputePattern(char *guess, char *answer)
 				pattern[i] = 'o';
 				answerLetters[answer[i] - 'a']--;
 			}
-		else
-			pattern[i] = '_';
 	}
 
 	/* remaining incorrect or misplaced letters */
