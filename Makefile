@@ -20,8 +20,7 @@ run: $(PROG)
 solve: $(PROG)
 	./wordle --mode solver \
 		 	 --answers-file data/possible_answers.txt \
-			 --guesses-file data/possible_guesses.txt \
-			 --answer urine
+			 --guesses-file data/possible_guesses.txt 
 
 clean:
 	rm $(OBJS) $(PROG)

@@ -19,23 +19,13 @@ static void terminate(char *m)
 {
     printf("%s\n", m);
     exit(EXIT_FAILURE);
-    // TO TEACHER : l'imitation est la plus sincère des flatteries
 }
 
 Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 {
-	/*
-	create structure
-	---------------------------------------------------------------------------
-	*/
 	Wordle *wordle = malloc(sizeof(Wordle));
 	if(!wordle)
 		terminate("wordleStart: malloc Wordle failed");
-
-	/*
-	create guesses dictionary
-	---------------------------------------------------------------------------
-	*/
 	FILE *guessesFile = fopen(guesses_file,"r");
 	if(!guessesFile)
 		terminate("wordleStart: guesses_file cannot be opened");
@@ -54,14 +44,10 @@ it depends on how you encode the characters
 but since we only use characters from the Roman alphabet,
 a character is represented by a byte in UTF-8, its like ascii
 */
-/*	  // seems like a cute kitsune wants to help
-
-	while(fgets(guess,SIZEGET,guessesFile))
-		kitsune++;
-*/	/* initialize dictionary */
+	/* initialize dictionary */
 	Dict *guesses = dictCreate(kitsune);
 	char guess[SIZEGET];
-//	rewind(guessesFile);
+
 	for(kitsune = 0; fgets(guess,SIZEGET,guessesFile); kitsune++)
 		{
 			guess[SIZEWORD] = 0;
@@ -70,7 +56,6 @@ a character is represented by a byte in UTF-8, its like ascii
 
 	wordle->guesses = guesses;
 	fclose(guessesFile);
-
 	/*
 	choose answer
 	---------------------------------------------------------------------------
@@ -98,12 +83,11 @@ a character is represented by a byte in UTF-8, its like ascii
 		/* choose random word */
 		rewind(answerFile);
 		int random = rand() % kitsune;
+		//fseek must be more efficient here
 		for(kitsune = 0; kitsune < random; kitsune++)
 			{
 				fgets(randomAnswer,SIZEGET,answerFile);
 			}
-			// faute de mieux je parcours tout le fichier jusqu'au bon mot
-			//->fseek
 		randomAnswer[SIZEWORD] = 0;
 		strcpy(wordle->answer,randomAnswer);
 		fclose(answerFile);
@@ -131,13 +115,11 @@ char *wordleComputePattern(char *guess, char *answer)
 	int answerLetters[LETTERS];
 	for(int i=0; i < LETTERS ;i++)
 		answerLetters[i] = 0;
-
 	/* count each letter */
 	for(int i=0; i < SIZEWORD; i++)
 	{
 		answerLetters[answer[i] - 'a']++;
 	}
-
 	/* Pattern Computation
 	---------------------------------------------------------------------------
 	*/
@@ -156,7 +138,6 @@ char *wordleComputePattern(char *guess, char *answer)
 				answerLetters[answer[i] - 'a']--;
 			}
 	}
-
 	/* remaining incorrect or misplaced letters */
 	for(int i=0; i < SIZEWORD; i++)
 	{
@@ -169,7 +150,6 @@ char *wordleComputePattern(char *guess, char *answer)
 				}
 		}
 	}
-
 	return pattern;
 }
 
@@ -177,6 +157,5 @@ char *wordleCheckGuess(Wordle *game, char *guess)
 {
 	if(!dictContains(game->guesses, guess))
 		return NULL;
-
 	return wordleComputePattern(guess, game->answer);
 }
