@@ -170,7 +170,6 @@ int llFilter(List *list, int (*test)(void *, void *),
         }
         else
         {   
-            printf("%d(%s)\n",count,(char*)llData(cn));
             pn = cn;
             cn = nn;
 
