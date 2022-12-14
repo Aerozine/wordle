@@ -37,14 +37,17 @@ Solver *solverStart(char *answers_file, char *guesses_file) {
   FILE *Fanswers = fopen(answers_file, "r");
   if (!Fguess || !Fanswers)
     terminate("SolverStart: guesses_file of answers_file cannot be opened");
-  char wordg[SIZEGET], worda[SIZEGET];
-  while (fgets(wordg, SIZEGET, Fguess)) {
+  char wordg[SIZEGET], worda[SIZEGET]; //fetching
+  while (fgets(wordg, SIZEWORD+1, Fguess)) {
     wordg[SIZEWORD] = '\0';
     llInsertLast(solver->guesses, llCreateNode((void *)newstrdup(wordg)));
-  }
-  while (fgets(worda, SIZEGET, Fanswers)) {
+    fseek(Fguess, 1, SEEK_CUR);
+  }// allocating the word and \0
+  while (fgets(worda, SIZEWORD+1, Fanswers)) {
     worda[SIZEWORD] = '\0';
     llInsertLast(solver->answers, llCreateNode((void *)newstrdup(worda)));
+    //skipping the \n
+    fseek(Fanswers, 1, SEEK_CUR);
   }
   fclose(Fguess);
   fclose(Fanswers);
@@ -75,24 +78,24 @@ double solverBestGuess(Solver *solver, char *guess) {
     return 0.0;
   }
   int bestSum = -1;
-  while (wg) {
+  while (wg) { //for every guess word :
     int sum = 0;
     Node *wa = llHead(solver->answers);
     Dict *dict = dictCreate(llLength(solver->answers));
-    while (wa) {
+    while (wa) { // for every answer word :
       char *data[] = {(char *)llData(wg),
-                      wordleComputePattern(llData(wg), llData(wa))};
+                      wordleComputePattern(llData(wg), llData(wa))}; // data={guess,patern}
       if (!dictContains(dict, data[1])) {
         dictInsert(dict, data[1], (double)llFilter(solver->answers, test, data, 1, 0));
       }
       sum += (int)dictSearch(dict, data[1]);
-      wa = llNext(wa);
-    }
+      wa = llNext(wa);// go to the next node 
+    }//get the best score and put them on guess
     if (bestSum <= sum) {
       bestSum = sum;
       strcpy(guess, (char *)llData(wg));
     }
-    wg = llNext(wg);
+    wg = llNext(wg);// go to the next node 
   }
   return (double)bestSum / (double)llLength(solver->answers);
 }

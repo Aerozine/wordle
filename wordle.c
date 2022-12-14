@@ -31,16 +31,15 @@ Wordle *wordleStart(char *answers_file, char *guesses_file, char *answer)
 		terminate("wordleStart: guesses_file cannot be opened");
 	int kitsune = 0;
 
-// /* --meta comment-- // put a "//"in the begin to enable/disable the fragment
-fseek(guessesFile, 0, SEEK_END);//go to the end
-int  size = ftell(guessesFile)+1;  // get the number of bytes
-fseek(guessesFile, 0, SEEK_SET); // return at the start
+// /* ------------------------
+fseek(guessesFile, 0, SEEK_END);	//go to the end
+int  size = ftell(guessesFile)+1; 	// get the number of bytes (+1 for the current last byte)
+fseek(guessesFile, 0, SEEK_SET); 	// return at the start
 kitsune=size/(SIZEWORD+1);
-//*/
+//-----------------------------*/
 /* little hack
 give the number of bytes in the file , dividing that with SIZEWORD+1 gives the number of word
-idk what you want to chose
-it depends on how you encode the characters
+depends on how you encode the characters
 but since we only use characters from the Roman alphabet,
 a character is represented by a byte in UTF-8, its like ascii
 */
@@ -75,20 +74,18 @@ a character is represented by a byte in UTF-8, its like ascii
 			terminate("wordleStart: answers_file cannot be opened");
 
 		/* count Sa */
-		kitsune = 0;
-		char randomAnswer[SIZEGET];
-		while(fgets(randomAnswer,SIZEGET,answerFile))
-			kitsune++;
+		fseek(answerFile, 0, SEEK_END);
+		kitsune=(ftell(answerFile)+1)/(SIZEWORD+1);
+		fseek(answerFile, 0, SEEK_SET); 
 
+		char randomAnswer[SIZEGET];
 		/* choose random word */
 		rewind(answerFile);
-		int random = rand() % kitsune;
-		//fseek must be more efficient here
-		for(kitsune = 0; kitsune < random; kitsune++)
-			{
-				fgets(randomAnswer,SIZEGET,answerFile);
-			}
-		randomAnswer[SIZEWORD] = 0;
+		int random = (rand() % kitsune)*(SIZEWORD+1);
+		// jump to the random word
+		fseek(answerFile,random,SEEK_SET);
+		fgets(randomAnswer,SIZEGET,answerFile);
+		randomAnswer[SIZEWORD] = '\0';
 		strcpy(wordle->answer,randomAnswer);
 		fclose(answerFile);
 	}
