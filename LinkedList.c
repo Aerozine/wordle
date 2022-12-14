@@ -154,6 +154,7 @@ int llFilter(List *list, int (*test)(void *, void *),
         if (test(cn->data, params))
         {
             count++;
+
             if (!dryRun)
             {
                 if (pn)
@@ -168,9 +169,11 @@ int llFilter(List *list, int (*test)(void *, void *),
             cn = nn;
         }
         else
-        {
+        {   
+            printf("%d(%s)\n",count,(char*)llData(cn));
             pn = cn;
             cn = nn;
+
         }
     }
 

@@ -58,21 +58,16 @@ void solverFree(Solver *solver) {
 }
 
 int solverGetNbAnswers(Solver *solver) { return llLength(solver->answers); }
-
 static int test(void *answer, void *data) {
   char *guess = ((char **)(data))[0];
   char *pattern = ((char **)(data))[1];
   char *newpatern = wordleComputePattern(guess, (char *)answer);
-  printf("(%s and %s) and %d \n",(char*)answer,guess,strcmp(pattern, newpatern)!=0);
-  printf("(%s and %s) and %d \n",pattern,newpatern,strcmp(pattern, newpatern)!=0);
   return strcmp(pattern, newpatern)!=0;
 }
-
 int solverUpdate(Solver *solver, char *guess, char *pattern) {
   char *data[] = {guess, pattern};
   return llFilter(solver->answers, test, data, 0, 1);
 }
-
 double solverBestGuess(Solver *solver, char *guess) {
   Node *wg = llHead(solver->guesses);
   if (llLength(solver->answers) == 1) {
@@ -87,13 +82,12 @@ double solverBestGuess(Solver *solver, char *guess) {
     while (wa) {
       char *data[] = {(char *)llData(wg),
                       wordleComputePattern(llData(wg), llData(wa))};
-      if (!dictContains(dict, data[0])) {
-        dictInsert(dict, data[0], llFilter(solver->answers, test, data, 1, 0));
+      if (!dictContains(dict, data[1])) {
+        dictInsert(dict, data[1], (double)llFilter(solver->answers, test, data, 1, 0));
       }
-      sum += dictSearch(dict, data[0]);
+      sum += (int)dictSearch(dict, data[1]);
       wa = llNext(wa);
     }
-    printf("<%s> %d %d\n",(char *)llData(wg),bestSum,sum);
     if (bestSum <= sum) {
       bestSum = sum;
       strcpy(guess, (char *)llData(wg));

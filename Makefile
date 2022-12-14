@@ -15,6 +15,14 @@ run: $(PROG)
 	./wordle --mode human \
 		 	 --answers-file data/possible_answers.txt \
 			 --guesses-file data/possible_guesses.txt
+
+
+solve: $(PROG)
+	./wordle --mode solver \
+		 	 --answers-file data/possible_answers.txt \
+			 --guesses-file data/possible_guesses.txt \
+			 --answer urine
+
 clean:
 	rm $(OBJS) $(PROG)
 
